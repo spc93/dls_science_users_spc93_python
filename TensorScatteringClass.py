@@ -1423,12 +1423,14 @@ class TensorScatteringClass():
         if np.allclose(sum_phases, sum_phases.real, atol=tol):
             sum_phases=np.real(sum_phases)
     
+        self.siteSF = sum_phase_all/len(self.pglist)
+    
         txtyn=['Yes','Invalid value', 'No', 'Invalid value']; txtoe=['Even', 'Odd', 'Either', 'Either']; 
         #(self.fmt+'[%.1f, %.1f, %.1f]') % ('hkl',self.hkl[0], self.hkl[1], self.hkl[2]) \ ######## remove self - OK??????
         outstr = \
             (self.fmt+'[%.1f, %.1f, %.1f]') % ('hkl',hkl[0], hkl[1], hkl[2]) \
             +(self.fmt+'%s') % ('Site allowed', self.msg(site_scalar_allowed, txt=txtyn)) \
-            +(self.fmt+'%.2f+%.2fi') % ('Structure factor for site', np.real(sum_phase_all/len(self.pglist)), np.imag(sum_phase_all/len(self.pglist))) \
+            +(self.fmt+'%.2f+%.2fi') % ('Structure factor for site', np.real(self.siteSF), np.imag(self.siteSF)) \
             +(self.fmt+'%s') % ('Spacegroup allowed', self.msg(gen_scalar_allowed, txt=txtyn)) \
             +(self.fmt+'%s') % ('Tensor allowed', self.msg(tensor_allowed, txt=txtyn)) \
             +(self.fmt+'%s') % ('Parity', self.msg(Psym, txt=txtoe) ) \

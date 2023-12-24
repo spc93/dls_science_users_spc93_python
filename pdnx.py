@@ -308,3 +308,9 @@ def vec2mat(vecx, vecy, vecz, n_inner=None):
 
     return matx, maty, matz
 
+#############################################################################
+# tmp test
+
+#p1 = '/dls/i21/data/2022/cm31147-3/BNOO6/i21-%i.nxs'
+#n = pdnx(p1 % 247219, entry = '/entry', data ='/diamond_scan')
+############################################################################

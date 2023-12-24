@@ -1,4 +1,4 @@
-# Copyright 2015 Diamond Light Source Ltd.
+# Copyright 2022 Diamond Light Source Ltd.
 #
 # Licensed under the Apache License, Version 2.0 (the "License");
 # you may not use this file except in compliance with the License.
@@ -12,20 +12,22 @@
 # See the License for the specific language governing permissions and
 # limitations under the License.
 
+# Modified for Python 3
+
 try:
-    print "=== Trying Python imports..."
+    print("=== Trying Python imports...")
     import numpy as np
     from numpy.linalg.linalg import norm
     from numpy.linalg.linalg import inv
     from numpy.linalg.linalg import dot
-    print "=== OK"
+    print("=== OK")
 except:
-    print "=== ... No joy ... trying Jython imports"
+    print("=== ... No joy ... trying Jython imports")
     import scisoftpy as np
     from scisoftpy.linalg import norm   
     from scisoftpy.linalg import inv
     from scisoftpy import dot
-    print "=== OK"
+    print("=== OK")
 
 
 class tripod_class():
@@ -141,7 +143,10 @@ class tripod_class():
         assert ang_change < self.tol / 10, '=== No convergence:\n=== DO NOT MOVE TO THIS POSITION ==='
         return X
 
-    def _calcBXY(self, C, (alpha1, alpha2, alpha3)):
+   
+    
+    def _calcBXY(self, C, angs):
+        (alpha1, alpha2, alpha3) = angs
         # calculate base translations (see documentation)
         (xvec, yvec, zvec) = self._calc_xyzvec(alpha1, alpha2, alpha3)
         # calculate T1,2,3 from xvec, yvec, zvec
@@ -174,23 +179,24 @@ class tripod_class():
         xvec, yvec, zvec = R[:,0], R[:,1], R[:,2]
         return (xvec, yvec, zvec)
 
-    def cbase(self, C, (alpha1, alpha2, alpha3)):
+    def cbase(self, C, angs):
+        (alpha1, alpha2, alpha3) = angs
         'self.cbase((CX, CY, CZ),(alpha1,alpha2, alpha3)) calculates base vectors for tooling point coordinates and angles (degrees)'
         X, Y = self._calcBXY(C, (alpha1 * np.pi / 180, alpha2 * np.pi / 180, alpha3 * np.pi / 180))
         self.X, self.Y = X, Y
         return np.array(X), np.array(Y)
 
 if __name__ == '__main__':
-    print '=== Performing transformations in both directions for consistency, using random numbers'
+    print('=== Performing transformations in both directions for consistency, using random numbers')
     tp = tripod_class([134.2, 134.2, 134.2], [194.1, 194.1, 59.9], [-np.pi/3, np.pi/3, 0], [98.0, 29.95, 60.0], [np.pi/4, np.pi/4, -np.pi/4], [0.0, 0.0, 357], [254.0, 0.0, 127.0])  # mainly from drawings except base centres
     X, Y = np.random.rand(3) * 5, np.random.rand(3) * 5
-    print 'X coords of base translations applied: %.3f %.3f %.3f' % tuple(X), '\nY coords of base translations applied: %.3f %.3f %.3f' % tuple(Y)
+    print('X coords of base translations applied: %.3f %.3f %.3f' % tuple(X), '\nY coords of base translations applied: %.3f %.3f %.3f' % tuple(Y))
     c, alpha = tp.ctool(X, Y)  # calculate tool-pint coordinates c and tiltangles alpha for given X Y base translations
-    print 'Tool point coords (c):  %.3f %.3f %.3f' % tuple(c), '\nTilt angles (alpha, deg) :%.3f %.3f %.3f' % tuple(alpha)
-    print 'Reverse calculation to check that X and Y are reproduced'
+    print('Tool point coords (c):  %.3f %.3f %.3f' % tuple(c), '\nTilt angles (alpha, deg) :%.3f %.3f %.3f' % tuple(alpha))
+    print('Reverse calculation to check that X and Y are reproduced')
     Xnew, Ynew = tp.cbase(c, np.array(alpha))
-    print 'X coords of base translations applied: %.3f %.3f %.3f' % tuple(Xnew),'\nY coords of base translations applied: %.3f %.3f %.3f' % tuple(Ynew)
+    print('X coords of base translations applied: %.3f %.3f %.3f' % tuple(Xnew),'\nY coords of base translations applied: %.3f %.3f %.3f' % tuple(Ynew))
     if np.allclose([X, Y], [Xnew, Ynew]):
-        print '=== Test passed!'
+        print('=== Test passed!')
     else:
-        print '=== Test failed!'
+        print('=== Test failed!')
